@@ -121,8 +121,9 @@ def main():
     degu = Degu()
     pipe = Pipe()
     pipe2 = Pipe()
-    pipe3 = Pipe()
-    pipe4 = Pipe()
+    pipes = [ {'x': pipe, 'y': pipe2} ]
+    #pipe3 = Pipe()
+    #pipe4 = Pipe()
     degusprites = pygame.sprite.RenderPlain((degu))
     pipesprites = pygame.sprite.RenderPlain((pipe))
     running = True
@@ -137,7 +138,15 @@ def main():
                     degu.jump()
 
 
-        pipe.move()
+        for pipe in pipes:
+            pipe['x'].move()
+        if 0 < pipes[0]['x'] < 5:
+            newPipe = Pipe()
+            pipes.append(newPipe[0])
+        # attempt to remove pipes from list    
+        #if pipes[0]['x'] < 
+               
+        #pipe.move()
         degusprites.update()
         pipesprites.update()
 
