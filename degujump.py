@@ -1,4 +1,4 @@
-import os, pygame, random
+import os, pygame, random, time
 from pygame.locals import *
 from pygame.compat import geterror
 
@@ -6,6 +6,7 @@ main_dir = os.path.split(os.path.abspath(__file__))[0]
 data_dir = os.path.join(main_dir, 'data')
 screen_width = 800
 screen_height = 400
+spawn_time = 1
 Clock = pygame.time.Clock()
 def image(name, colorkey = None):
     #image load stuff here
@@ -43,7 +44,7 @@ class Degu(pygame.sprite.Sprite):
         self.image, self.rect = image('degurest.png', -1)
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        self.rect.topleft = 10, 300
+        self.rect.topleft = 10, 350
         self.change_x = 0
         self.change_y = 0
         self.power_y = 0
@@ -55,9 +56,9 @@ class Degu(pygame.sprite.Sprite):
         self.rect.y += self.power_y
 
     def gravity(self):
-        if self.rect.y < 300:
+        if self.rect.y < 350:
             self.change_y = -9
-        elif self.rect.y == 300:
+        elif self.rect.y == 350:
             self.change_y = 0
 
 
@@ -85,17 +86,10 @@ class Pipe(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (50, 210))
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        self.rect.topleft = 500, random.randint(200, 450)
+        self.rect.topleft = 500, random.randint(200, 290)
         self.change_x = 0
     def move(self):
-        self.rect.x -= 4
-    #def spawn(self):
-     #   size = random.randint(200, 450)
-      #  self.rect.topleft = 500, size
-       # self.move()
-
-
-
+        self.rect.x -= 6
 
 
 def score():
@@ -125,22 +119,14 @@ def main():
     pygame.display.flip()
 
     degu = Degu()
-<<<<<<< HEAD
     pipe = Pipe()
-<<<<<<< HEAD
-
-    count = 0
-=======
-    #pipelist = []
->>>>>>> parent of 64d7e17... smlall
-=======
-    #pipe = Pipe()
-    count = 0
-    pipelist = pygame.sprite.Group()
->>>>>>> parent of bc59d1b... lost
-
-    allsprites = pygame.sprite.RenderPlain((degu))
+    pipe2 = Pipe()
+    pipe3 = Pipe()
+    pipe4 = Pipe()
+    degusprites = pygame.sprite.RenderPlain((degu))
+    pipesprites = pygame.sprite.RenderPlain((pipe))
     running = True
+    starttime = time.time()
     while running:
         Clock.tick(60)
         for event in pygame.event.get():
@@ -150,28 +136,26 @@ def main():
                 if event.key == pygame.K_SPACE:
                     degu.jump()
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
-        pipe.spawn()
+        pipe.move()
+        degusprites.update()
+        pipesprites.update()
 
-        allsprites.update()
->>>>>>> parent of 64d7e17... smlall
-=======
-        pipelist.move()
-        screen.blit(background, (0,0))
-        pipelist.draw(screen)
-        
-        
-
->>>>>>> parent of bc59d1b... lost
-
-
-        
-        allsprites.draw(screen)
-        pygame.display.update()
+        screen.blit(background, (0, 0))
+        degusprites.draw(screen)
+        pipesprites.draw(screen)
         pygame.display.flip()
+        # below
+        if time.time() - spawn_time > starttime:
+            pipe2.move()
+            degusprites.update()
+            pipesprites.update()
+
+            screen.blit(background, (0, 0))
+            degusprites.draw(screen)
+            pipesprites.draw(screen)
+            pygame.display.flip()
+            #above can be removed
 
 
     pygame.quit()
