@@ -77,7 +77,7 @@ class Degu(pygame.sprite.Sprite):
 
 
 class Pipe(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, screen, height):
         pygame.sprite.Sprite.__init__(self)
         #self.image = pygame.image.load('Pipe.png')
         #self.image = pygame.transform.scale(image, (100, 100))
@@ -86,9 +86,9 @@ class Pipe(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (50, 210))
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        self.rect.topleft = 500, random.randint(200, 290)
+        self.rect.topleft = 770, height
         self.change_x = 0
-    def move(self):
+    def update(self):
         self.rect.x -= 6
 
 
@@ -119,15 +119,22 @@ def main():
     pygame.display.flip()
 
     degu = Degu()
-    pipe = Pipe()
-    pipe2 = Pipe()
-    pipes = [ {'x': pipe, 'y': pipe2} ]
+    #pipe = Pipe()
+    pipelist = pygame.sprite.Group()
+    #now = pygame.time.get_ticks()
+    #time_difference = pygame.time.get_ticks() - now
+    clock = pygame.time.Clock()
+
+    timer = 0
+    #x = 0
+
+    ##pipes = [ {'x': pipe, 'y': pipe2} ]
     #pipe3 = Pipe()
     #pipe4 = Pipe()
     degusprites = pygame.sprite.RenderPlain((degu))
-    pipesprites = pygame.sprite.RenderPlain((pipe))
+    #pipesprites = pygame.sprite.RenderPlain((pipe))
     running = True
-    starttime = time.time()
+    #starttime = time.time()
     while running:
         Clock.tick(60)
         for event in pygame.event.get():
@@ -136,35 +143,50 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     degu.jump()
+                    #if x < 1:
+                    #    pipelist.add(Pipe(screen, random.randint(200, 290)))
+                    #    x += 1
 
 
-        for pipe in pipes:
-            pipe['x'].move()
-        if 0 < pipes[0]['x'] < 5:
-            newPipe = Pipe()
-            pipes.append(newPipe[0])
-        # attempt to remove pipes from list    
-        #if pipes[0]['x'] < 
-               
+
+        #for pipe in pipes:
+        #    pipe['x'].move()
+    #    if 0 < pipes[0]['x'] < 5:
+    #        newPipe = Pipe()
+    #        pipes.append(newPipe[0])
+        # attempt to remove pipes from list
+        #if pipes[0]['x'] <
+
         #pipe.move()
+# Here is the good stuff
+        timer += 1
+        if timer >= random.randint(25, 50):
+            pipelist.add(Pipe(screen, random.randint(200, 290)))
+            timer = 0
+
+
+        pipelist.update()
         degusprites.update()
-        pipesprites.update()
+        #pipesprites.update()
 
         screen.blit(background, (0, 0))
         degusprites.draw(screen)
-        pipesprites.draw(screen)
-        pygame.display.flip()
-        # below
-        if time.time() - spawn_time > starttime:
-            pipe2.move()
-            degusprites.update()
-            pipesprites.update()
+        pipelist.draw(screen)
+        #pipesprites.draw(screen)
 
-            screen.blit(background, (0, 0))
-            degusprites.draw(screen)
-            pipesprites.draw(screen)
-            pygame.display.flip()
-            #above can be removed
+        pygame.display.flip()
+
+
+
+
+
+# need to isolate this
+
+
+
+
+
+
 
 
     pygame.quit()
