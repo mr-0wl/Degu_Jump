@@ -1,4 +1,4 @@
-import os, pygame
+import os, pygame, random
 from pygame.locals import *
 from pygame.compat import geterror
 
@@ -88,7 +88,14 @@ class Pipe(pygame.sprite.Sprite):
         self.rect.topleft = 500, 200
         self.change_x = 0
     def move(self):
-        self.rect.x -= 2
+        self.rect.x -= 4
+    def spawn(self):
+        size = random.randint(200, 450)
+        self.rect.topleft = 500, size
+        self.move()
+
+
+
 
 
 def score():
@@ -119,6 +126,8 @@ def main():
 
     degu = Degu()
     pipe = Pipe()
+    #pipelist = []
+
     allsprites = pygame.sprite.RenderPlain((degu, pipe))
     running = True
     while running:
@@ -131,8 +140,10 @@ def main():
                     degu.jump()
 
 
-        pipe.move()
+        pipe.spawn()
+
         allsprites.update()
+
 
         screen.blit(background, (0, 0))
         allsprites.draw(screen)
