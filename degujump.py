@@ -7,8 +7,6 @@ data_dir = os.path.join(main_dir, 'data')
 screen_width = 800
 screen_height = 400
 Clock = pygame.time.Clock()
-
-
 def image(name, colorkey = None):
     #image load stuff here
     fullname = os.path.join(data_dir, name)
@@ -112,8 +110,6 @@ def tube():
     #tubes and random sizing here
     pass
 
-
-
 def main():
     #main game loop here
     pygame.init()
@@ -129,6 +125,7 @@ def main():
     pygame.display.flip()
 
     degu = Degu()
+<<<<<<< HEAD
     pipe = Pipe()
 <<<<<<< HEAD
 
@@ -136,8 +133,13 @@ def main():
 =======
     #pipelist = []
 >>>>>>> parent of 64d7e17... smlall
+=======
+    #pipe = Pipe()
+    count = 0
+    pipelist = pygame.sprite.Group()
+>>>>>>> parent of bc59d1b... lost
 
-    allsprites = pygame.sprite.RenderPlain((degu, pipe))
+    allsprites = pygame.sprite.RenderPlain((degu))
     running = True
     while running:
         Clock.tick(60)
@@ -149,23 +151,27 @@ def main():
                     degu.jump()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
         pipe.spawn()
 
         allsprites.update()
 >>>>>>> parent of 64d7e17... smlall
+=======
+        pipelist.move()
+        screen.blit(background, (0,0))
+        pipelist.draw(screen)
+        
+        
 
-        pipelist = pygame.sprite.Group()
+>>>>>>> parent of bc59d1b... lost
 
-        pipelist.add(pipe)
-        for pipe in pipelist:
-            pipe.move()
-            screen.blit(background, (0,0))
-            pipelist.draw(screen)
-            allsprites.draw(screen)
-            pygame.display.update()
-            pygame.display.flip()
+
+        
+        allsprites.draw(screen)
+        pygame.display.update()
+        pygame.display.flip()
 
 
     pygame.quit()
