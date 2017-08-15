@@ -85,14 +85,14 @@ class Pipe(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (50, 210))
         screen = pygame.display.get_surface()
         self.area = screen.get_rect()
-        self.rect.topleft = 500, 200
+        self.rect.topleft = 500, random.randint(200, 450)
         self.change_x = 0
     def move(self):
         self.rect.x -= 4
-    def spawn(self):
-        size = random.randint(200, 450)
-        self.rect.topleft = 500, size
-        self.move()
+    #def spawn(self):
+     #   size = random.randint(200, 450)
+      #  self.rect.topleft = 500, size
+       # self.move()
 
 
 
@@ -125,11 +125,11 @@ def main():
     pygame.display.flip()
 
     degu = Degu()
-    pipe = Pipe()
+    #pipe = Pipe()
     count = 0
-    pipelist = []
+    pipelist = pygame.sprite.Group()
 
-    allsprites = pygame.sprite.RenderPlain((degu, pipe))
+    allsprites = pygame.sprite.RenderPlain((degu))
     running = True
     while running:
         Clock.tick(60)
@@ -140,14 +140,17 @@ def main():
                 if event.key == pygame.K_SPACE:
                     degu.jump()
 
-        if count == 0:
-            pipelist.append(pipe.spawn())
-            allsprites.update()
+        pipelist.move()
+        screen.blit(background, (0,0))
+        pipelist.draw(screen)
+        
+        
 
 
 
-        screen.blit(background, (0, 0))
+        
         allsprites.draw(screen)
+        pygame.display.update()
         pygame.display.flip()
 
 
