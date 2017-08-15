@@ -130,8 +130,12 @@ def main():
 
     degu = Degu()
     pipe = Pipe()
+<<<<<<< HEAD
 
     count = 0
+=======
+    #pipelist = []
+>>>>>>> parent of 64d7e17... smlall
 
     allsprites = pygame.sprite.RenderPlain((degu, pipe))
     running = True
@@ -144,6 +148,13 @@ def main():
                 if event.key == pygame.K_SPACE:
                     degu.jump()
 
+<<<<<<< HEAD
+=======
+
+        pipe.spawn()
+
+        allsprites.update()
+>>>>>>> parent of 64d7e17... smlall
 
         pipelist = pygame.sprite.Group()
 
