@@ -126,7 +126,8 @@ def main():
 
     degu = Degu()
     pipe = Pipe()
-    #pipelist = []
+    count = 0
+    pipelist = []
 
     allsprites = pygame.sprite.RenderPlain((degu, pipe))
     running = True
@@ -139,10 +140,10 @@ def main():
                 if event.key == pygame.K_SPACE:
                     degu.jump()
 
+        if count == 0:
+            pipelist.append(pipe.spawn())
+            allsprites.update()
 
-        pipe.spawn()
-
-        allsprites.update()
 
 
         screen.blit(background, (0, 0))
