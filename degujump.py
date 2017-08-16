@@ -51,15 +51,23 @@ class Degu(pygame.sprite.Sprite):
     def update(self):
         self.gravity()
         self.power()
-        self.rect.x += self.change_x
-        self.rect.y -= self.change_y
-        self.rect.y += self.power_y
+        #self.rect.x += self.change_x
+        self.rect.y += self.change_y
+        #self.rect.y += self.power_y
 
     def gravity(self):
-        if self.rect.y < 350:
-            self.change_y = -9
-        elif self.rect.y == 350:
+        if self.change_y == 0:
+            self.change_y = 1
+        else:
+            self.change_y += 1
+        if self.rect.y >= screen_height - self.rect.height and self.change_y >= 0:
             self.change_y = 0
+            self.rect.y = screen_height - self.rect.height
+
+        #if self.rect.y < 350:
+        #    self.change_y = -9
+        #elif self.rect.y == 350:
+    #        self.change_y = 0
 
 
 
@@ -70,8 +78,12 @@ class Degu(pygame.sprite.Sprite):
             pass
 
     def jump(self):
-        if self.rect.y >= 300:
-            self.power_y = -18
+        #self.rect.y += 2
+        #self.rect.y -= 2
+        self.change_y = -18
+        #if self.rect.y >= 350:
+        #    self.power_y = -18
+
 
 
 
@@ -143,6 +155,7 @@ def main():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     degu.jump()
+
                     #if x < 1:
                     #    pipelist.add(Pipe(screen, random.randint(200, 290)))
                     #    x += 1
@@ -160,8 +173,8 @@ def main():
         #pipe.move()
 # Here is the good stuff
         timer += 1
-        if timer >= random.randint(25, 50):
-            pipelist.add(Pipe(screen, random.randint(200, 290)))
+        if timer >= random.randint(37, 63):
+            pipelist.add(Pipe(screen, random.randint(220, 320)))
             timer = 0
 
 
@@ -181,7 +194,7 @@ def main():
 
 
 
-# need to isolate this
+
 
 
 
