@@ -43,7 +43,7 @@ class Degu(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = image('degurest.png', -1)
         screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
+        #self.area = screen.get_rect()
         self.rect.topleft = 10, 350
         self.change_x = 0
         self.change_y = 0
@@ -54,6 +54,7 @@ class Degu(pygame.sprite.Sprite):
         #self.rect.x += self.change_x
         self.rect.y += self.change_y
         #self.rect.y += self.power_y
+
 
     def gravity(self):
         if self.change_y == 0:
@@ -83,6 +84,12 @@ class Degu(pygame.sprite.Sprite):
         self.change_y = -18
         #if self.rect.y >= 350:
         #    self.power_y = -18
+    def dead(self):
+        self.image = pygame.transform.rotate(self.image, 180)
+        #pygame.time.wait(1000)
+
+
+
 
 
 
@@ -97,11 +104,12 @@ class Pipe(pygame.sprite.Sprite):
         self.image, self.rect = image('pipe.png', -1)
         self.image = pygame.transform.scale(self.image, (50, 210))
         screen = pygame.display.get_surface()
-        self.area = screen.get_rect()
+        #self.area = screen.get_rect()
         self.rect.topleft = 770, height
         self.change_x = 0
     def update(self):
         self.rect.x -= 6
+
 
 
 def score():
@@ -185,6 +193,18 @@ def main():
         screen.blit(background, (0, 0))
         degusprites.draw(screen)
         pipelist.draw(screen)
+        hit = pygame.sprite.spritecollide(degu, pipelist, False)
+        if hit:
+
+            degu.dead()
+            # needs work to update to flipped and land at game over menu
+
+
+
+
+
+
+
         #pipesprites.draw(screen)
 
         pygame.display.flip()
