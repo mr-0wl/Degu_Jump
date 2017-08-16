@@ -3,6 +3,12 @@ collission
 score
 remove pipe from list when off screen
 animate the jump
+menu
+gameover
+game over screen
+animate death
+sound for jump
+sound for hit
 
 
 
