@@ -2,12 +2,23 @@ import os, pygame, random, time
 from pygame.locals import *
 from pygame.compat import geterror
 
+
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 data_dir = os.path.join(main_dir, 'data')
 screen_width = 800
 screen_height = 400
 spawn_time = 1
+WHITE = (255, 255, 255)
 Clock = pygame.time.Clock()
+class SpriteSheet(object):
+    def __init__(self, file_name):
+        self.sprite_sheet = pygame.image.load(file_name).convert()
+    def get_image(self, x, y, width, height):
+        image = pygame.Surface([width, height]).convert()
+        image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
+        image.set_colorkey(constants.WHITE)
+        return image
+
 def image(name, colorkey = None):
     #image load stuff here
     fullname = os.path.join(data_dir, name)
@@ -82,7 +93,7 @@ class Degu(pygame.sprite.Sprite):
         #self.rect.y += 2
         #self.rect.y -= 2
         if self.rect.bottom >= 390:
-            
+
             self.change_y = -24
 
 
