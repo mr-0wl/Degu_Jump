@@ -44,13 +44,13 @@ class Degu(pygame.sprite.Sprite):
         self.image, self.rect = image('degurest.png', -1)
         screen = pygame.display.get_surface()
         #self.area = screen.get_rect()
-        self.rect.topleft = 10, 350
+        self.rect.topleft = 10, 400
         self.change_x = 0
         self.change_y = 0
         self.power_y = 0
     def update(self):
         self.gravity()
-        self.power()
+        #self.power()
         #self.rect.x += self.change_x
         self.rect.y += self.change_y
         #self.rect.y += self.power_y
@@ -81,12 +81,18 @@ class Degu(pygame.sprite.Sprite):
     def jump(self):
         #self.rect.y += 2
         #self.rect.y -= 2
-        self.change_y = -18
+        if self.rect.bottom >= 390:
+            
+            self.change_y = -24
+
+
+        else:
+            pass
         #if self.rect.y >= 350:
         #    self.power_y = -18
     def dead(self):
         self.image = pygame.transform.rotate(self.image, 180)
-        #pygame.time.wait(1000)
+        pygame.time.wait(500)
 
 
 
@@ -108,7 +114,7 @@ class Pipe(pygame.sprite.Sprite):
         self.rect.topleft = 770, height
         self.change_x = 0
     def update(self):
-        self.rect.x -= 6
+        self.rect.x -= 6.5
 
 
 
@@ -181,8 +187,8 @@ def main():
         #pipe.move()
 # Here is the good stuff
         timer += 1
-        if timer >= random.randint(37, 63):
-            pipelist.add(Pipe(screen, random.randint(220, 320)))
+        if timer >= random.randint(45, 65):
+            pipelist.add(Pipe(screen, random.randint(270, 380)))
             timer = 0
 
 
