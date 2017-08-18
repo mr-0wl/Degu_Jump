@@ -73,6 +73,8 @@ class Degu(pygame.sprite.Sprite):
         #self.image = self.rest[0]
         #self.rect = self.image.get_rect()
         self.rect.topleft = 10, 400
+        self.original = self.image
+
 
 
 
@@ -122,18 +124,19 @@ class Degu(pygame.sprite.Sprite):
         #self.rect.y += 2
         #self.rect.y -= 2
 
+
         if self.rect.bottom >= 390:
             #self.image = pygame.transform.rotate(self.image, 25)
 
             self.change_y = -24
-            #self.image = pygame.transform.rotate(self.image, -25)
+            self.image = pygame.transform.rotate(self.image, 25)
             #self.land()
             #Jump reset to image will be tightly tied to score
 
 
     def land(self):
-        if self.rect.y <= 200:
-            self.image = pygame.transform.rotate(self.image, -25)
+        if self.rect.y >= 390:
+            self.image = self.original
 
 
 
@@ -250,7 +253,7 @@ def main():
         #pipe.move()
 # Here is the good stuff
         timer += 1
-        if timer >= random.randint(45, 65):
+        if timer >= random.randint(50, 70):
             pipelist.add(Pipe(screen, random.randint(270, 380)))
             timer = 0
         elif timer == -500:
@@ -277,6 +280,9 @@ def main():
             if pipe.rect.x < 0:
                 pipe.kill()
                 score += 1
+        for gu in degusprites:
+            if gu.rect.y <= 180:
+                gu.image = gu.original
 
 
         #for testing
