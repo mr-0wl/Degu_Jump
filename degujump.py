@@ -9,14 +9,17 @@ screen_width = 800
 screen_height = 400
 spawn_time = 1
 WHITE = (255, 255, 255)
+BLACK = (0,0,0)
 Clock = pygame.time.Clock()
+DEAD = pygame.USEREVENT + 1
+FPS, timer = 60,0
 class SpriteSheet(object):
     def __init__(self, file_name):
         self.sprite_sheet = pygame.image.load(file_name).convert()
     def get_image(self, x, y, width, height):
         image = pygame.Surface([width, height]).convert()
         image.blit(self.sprite_sheet, (0, 0), (x, y, width, height))
-        image.set_colorkey(constants.WHITE)
+        image.set_colorkey(BLACK)
         return image
 
 def image(name, colorkey = None):
@@ -53,18 +56,43 @@ class Degu(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = image('degurest.png', -1)
+
         screen = pygame.display.get_surface()
-        #self.area = screen.get_rect()
-        self.rect.topleft = 10, 400
+        self.area = screen.get_rect()
+
         self.change_x = 0
         self.change_y = 0
         self.power_y = 0
+        #self.jump = []
+        #self.rest = []
+        #sprite_sheet = SpriteSheet("spritesheet.png")
+        #jumpimage = sprite_sheet.get_image(1,1,77,38)
+        #self.jump.append(jumpimage)
+        #restimage = sprite_sheet.get_image(1,70,77,38)
+        #self.rest.append(restimage)
+        #self.image = self.rest[0]
+        #self.rect = self.image.get_rect()
+        self.rect.topleft = 10, 400
+
+
+
     def update(self):
         self.gravity()
+
+
         #self.power()
         #self.rect.x += self.change_x
         self.rect.y += self.change_y
+
         #self.rect.y += self.power_y
+    def ground(self):
+        if self.rect.bottom >= screen_height:
+            self.image, self.rect = image('degurest.png', -1)
+            #self.rect.topleft = 10, 400
+
+
+
+
 
 
     def gravity(self):
@@ -75,6 +103,7 @@ class Degu(pygame.sprite.Sprite):
         if self.rect.y >= screen_height - self.rect.height and self.change_y >= 0:
             self.change_y = 0
             self.rect.y = screen_height - self.rect.height
+
 
         #if self.rect.y < 350:
         #    self.change_y = -9
@@ -92,9 +121,21 @@ class Degu(pygame.sprite.Sprite):
     def jump(self):
         #self.rect.y += 2
         #self.rect.y -= 2
+
         if self.rect.bottom >= 390:
+            #self.image = pygame.transform.rotate(self.image, 25)
 
             self.change_y = -24
+            #self.image = pygame.transform.rotate(self.image, -25)
+            #self.land()
+            #Jump reset to image will be tightly tied to score
+
+
+    def land(self):
+        if self.rect.y <= 200:
+            self.image = pygame.transform.rotate(self.image, -25)
+
+
 
 
         else:
@@ -102,8 +143,14 @@ class Degu(pygame.sprite.Sprite):
         #if self.rect.y >= 350:
         #    self.power_y = -18
     def dead(self):
-        self.image = pygame.transform.rotate(self.image, 180)
-        pygame.time.wait(500)
+        self.image, self.rect = image('degudead.png', -1)
+        self.rect.topleft = 10, 400
+
+
+
+
+
+
 
 
 
@@ -123,9 +170,13 @@ class Pipe(pygame.sprite.Sprite):
         screen = pygame.display.get_surface()
         #self.area = screen.get_rect()
         self.rect.topleft = 770, height
-        self.change_x = 0
+        self.change_x = 6.5
     def update(self):
-        self.rect.x -= 6.5
+        self.rect.x -= self.change_x
+    def stop(self):
+        self.change_x = 0
+        self.rect.x += 2
+
 
 
 
@@ -137,9 +188,7 @@ def menu():
     # start menu here
     pass
 
-def tube():
-    #tubes and random sizing here
-    pass
+
 
 def main():
     #main game loop here
@@ -154,7 +203,8 @@ def main():
 
     screen.blit(background, (0, 0))
     pygame.display.flip()
-
+    hit_pipe_sound = sound('hit.wav')
+    jump_sound = sound('jump.wav')
     degu = Degu()
     #pipe = Pipe()
     pipelist = pygame.sprite.Group()
@@ -163,6 +213,7 @@ def main():
     clock = pygame.time.Clock()
 
     timer = 0
+    score = 0
     #x = 0
 
     ##pipes = [ {'x': pipe, 'y': pipe2} ]
@@ -179,6 +230,7 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
+                    jump_sound.play()
                     degu.jump()
 
                     #if x < 1:
@@ -201,10 +253,14 @@ def main():
         if timer >= random.randint(45, 65):
             pipelist.add(Pipe(screen, random.randint(270, 380)))
             timer = 0
+        elif timer == -500:
+            running = False
+            #Need way to stop running main loop but have a menu
 
 
         pipelist.update()
         degusprites.update()
+
         #pipesprites.update()
 
         screen.blit(background, (0, 0))
@@ -212,8 +268,29 @@ def main():
         pipelist.draw(screen)
         hit = pygame.sprite.spritecollide(degu, pipelist, False)
         if hit:
-
+            hit_pipe_sound.play()
             degu.dead()
+            timer = -1000
+            for i in pipelist:
+                i.stop()
+        for pipe in pipelist:
+            if pipe.rect.x < 0:
+                pipe.kill()
+                score += 1
+
+
+        #for testing
+        #if score == 5:
+        #    pygame.time.wait(500)
+        #    running = False
+            #need to call menu here and have it stop the timer and while loop
+            #degusprites.update()
+            #screen.blit(background, (0, 0))
+            #degusprites.draw(screen)
+
+
+
+
             # needs work to update to flipped and land at game over menu
 
 

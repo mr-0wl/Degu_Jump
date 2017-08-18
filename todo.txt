@@ -1,13 +1,15 @@
 background
 score
-remove pipe from list when off screen
+
 animate the jump
 menu
 gameover
 game over screen
-animate death
-sound for jump
-sound for hit
+
+tidy / remove notes
+Jumping animation might have to call a method or take place in the main loop
+menu call will have to stop main game loop while still keeping game open
+
 
 
 
