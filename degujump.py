@@ -74,6 +74,8 @@ class Degu(pygame.sprite.Sprite):
         #self.rect = self.image.get_rect()
         self.rect.topleft = 10, 400
         self.original = self.image
+        self.Dead = False
+        self.jump_sound = sound('jump.wav')
 
 
 
@@ -125,11 +127,12 @@ class Degu(pygame.sprite.Sprite):
         #self.rect.y -= 2
 
 
-        if self.rect.bottom >= 390:
+        if self.rect.bottom >= 385:
             #self.image = pygame.transform.rotate(self.image, 25)
 
             self.change_y = -24
             self.image = pygame.transform.rotate(self.image, 25)
+            self.jump_sound.play()
             #self.land()
             #Jump reset to image will be tightly tied to score
 
@@ -146,6 +149,7 @@ class Degu(pygame.sprite.Sprite):
         #if self.rect.y >= 350:
         #    self.power_y = -18
     def dead(self):
+        self.Dead = True
         self.image, self.rect = image('degudead.png', -1)
         self.rect.topleft = 10, 400
 
@@ -207,7 +211,7 @@ def main():
     screen.blit(background, (0, 0))
     pygame.display.flip()
     hit_pipe_sound = sound('hit.wav')
-    jump_sound = sound('jump.wav')
+
     degu = Degu()
     #pipe = Pipe()
     pipelist = pygame.sprite.Group()
@@ -233,7 +237,7 @@ def main():
                 running = False
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    jump_sound.play()
+
                     degu.jump()
 
                     #if x < 1:
@@ -253,11 +257,11 @@ def main():
         #pipe.move()
 # Here is the good stuff
         timer += 1
-        if timer >= random.randint(50, 70):
+        if timer >= random.randint(50, 70) and degu.Dead == False:
             pipelist.add(Pipe(screen, random.randint(270, 380)))
             timer = 0
-        elif timer == -500:
-            running = False
+        #elif timer == -500:
+        #    running = False
             #Need way to stop running main loop but have a menu
 
 
