@@ -221,6 +221,7 @@ def main():
 
     timer = 0
     score = 0
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     #x = 0
 
     ##pipes = [ {'x': pipe, 'y': pipe2} ]
@@ -287,6 +288,12 @@ def main():
         for gu in degusprites:
             if gu.rect.y <= 180:
                 gu.image = gu.original
+        # ************ Might have to move / play with this to get working
+        scoreSurf = BASICFONT.render('Score: ' + str(score), 1, BLACK)
+        scoreRect = scoreSurf.get_rect()
+        scoreRect.topleft = (screen_width - 100, 10)
+        screen.blit(scoreSurf, scoreRect)
+        # ************** end score
 
 
         #for testing
