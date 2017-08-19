@@ -14,6 +14,7 @@ Clock = pygame.time.Clock()
 DEAD = pygame.USEREVENT + 1
 FPS, timer = 60,0
 startnewgame = True
+bg = pygame.image.load('background.png')
 
 class SpriteSheet(object):
     def __init__(self, file_name):
@@ -205,8 +206,10 @@ def startMenu():
     instructRect = instructSurf.get_rect()
     startRect.midtop = (screen_width / 2, 10)
     instructRect.midtop = (screen_width / 2, startRect.height + 10 + 25)
+    screen.blit(bg, (0, 0))
     screen.blit(startSurf, startRect)
     screen.blit(instructSurf, instructRect)
+
     pygame.display.update()
     global startnewgame
     #pygame.time.wait(500)
@@ -232,11 +235,12 @@ def main():
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("Degu Jump")
     background = pygame.Surface(screen.get_size())
-    background = background.convert()
+
     background.fill((250,250,250))
 
 
-    screen.blit(background, (0, 0))
+
+    screen.blit(bg, (0, 0))
     pygame.display.flip()
     hit_pipe_sound = sound('hit.wav')
     score_sound = sound('score.wav')
@@ -285,7 +289,7 @@ def main():
         #degu.dead()
         degusprites.update()
         pipelist.update()
-        screen.blit(background, (0, 0))
+        screen.blit(bg, (0, 0))
         degusprites.draw(screen)
         pipelist.draw(screen)
         screen.blit(gameSurf, gameRect)
@@ -354,7 +358,7 @@ def main():
 
         #pipesprites.update()
 
-        screen.blit(background, (0, 0))
+        screen.blit(bg, (0, 0))
         degusprites.draw(screen)
         pipelist.draw(screen)
         hit = pygame.sprite.spritecollide(degu, pipelist, False)
