@@ -2,7 +2,7 @@ import os, pygame, random, time
 from pygame.locals import *
 from pygame.compat import geterror
 
-
+global startnewgame
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 data_dir = os.path.join(main_dir, 'data')
 screen_width = 800
@@ -13,6 +13,9 @@ BLACK = (0,0,0)
 Clock = pygame.time.Clock()
 DEAD = pygame.USEREVENT + 1
 FPS, timer = 60,0
+startnewgame = True
+bg = pygame.image.load('background.png')
+
 class SpriteSheet(object):
     def __init__(self, file_name):
         self.sprite_sheet = pygame.image.load(file_name).convert()
@@ -74,6 +77,8 @@ class Degu(pygame.sprite.Sprite):
         #self.rect = self.image.get_rect()
         self.rect.topleft = 10, 400
         self.original = self.image
+        self.Dead = False
+        self.jump_sound = sound('jump.wav')
 
 
 
@@ -125,11 +130,12 @@ class Degu(pygame.sprite.Sprite):
         #self.rect.y -= 2
 
 
-        if self.rect.bottom >= 390:
+        if self.rect.bottom >= 385:
             #self.image = pygame.transform.rotate(self.image, 25)
 
             self.change_y = -24
             self.image = pygame.transform.rotate(self.image, 25)
+            self.jump_sound.play()
             #self.land()
             #Jump reset to image will be tightly tied to score
 
@@ -146,6 +152,7 @@ class Degu(pygame.sprite.Sprite):
         #if self.rect.y >= 350:
         #    self.power_y = -18
     def dead(self):
+        self.Dead = True
         self.image, self.rect = image('degudead.png', -1)
         self.rect.topleft = 10, 400
 
@@ -183,32 +190,63 @@ class Pipe(pygame.sprite.Sprite):
 
 
 
-def score():
-    #score stuff here
-    pass
+
 
 def menu():
     # start menu here
     pass
 
 
+def startMenu():
+    startFont = pygame.font.Font('freesansbold.ttf', 100)
+    instructionFont = pygame.font.Font('freesansbold.ttf', 18)
+    startSurf = startFont.render('Degu Jump', True, BLACK)
+    instructSurf = instructionFont.render('Press space to jump. Press space to start', True, BLACK)
+    startRect = startSurf.get_rect()
+    instructRect = instructSurf.get_rect()
+    startRect.midtop = (screen_width / 2, 10)
+    instructRect.midtop = (screen_width / 2, startRect.height + 10 + 25)
+    screen.blit(bg, (0, 0))
+    screen.blit(startSurf, startRect)
+    screen.blit(instructSurf, instructRect)
+
+    pygame.display.update()
+    global startnewgame
+    #pygame.time.wait(500)
+    while True:
+
+         Clock.tick(60)
+         for event in pygame.event.get():
+             if event.type == QUIT:
+                 pygame.quit()
+                 sys.exit()
+             elif event.type == pygame.KEYDOWN:
+                 if event.key == pygame.K_SPACE:
+                     startnewgame = False
+                     #running = True
+                     #main()
+                     return
 
 def main():
     #main game loop here
+    global running, clock, BASICFONT, screen, background
     pygame.init()
 
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption("Degu Jump")
     background = pygame.Surface(screen.get_size())
-    background = background.convert()
+
     background.fill((250,250,250))
 
 
-    screen.blit(background, (0, 0))
+
+    screen.blit(bg, (0, 0))
     pygame.display.flip()
     hit_pipe_sound = sound('hit.wav')
-    jump_sound = sound('jump.wav')
+    score_sound = sound('score.wav')
+
     degu = Degu()
+    score = 0
     #pipe = Pipe()
     pipelist = pygame.sprite.Group()
     #now = pygame.time.get_ticks()
@@ -216,7 +254,8 @@ def main():
     clock = pygame.time.Clock()
 
     timer = 0
-    score = 0
+
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     #x = 0
 
     ##pipes = [ {'x': pipe, 'y': pipe2} ]
@@ -225,15 +264,68 @@ def main():
     degusprites = pygame.sprite.RenderPlain((degu))
     #pipesprites = pygame.sprite.RenderPlain((pipe))
     running = True
+
+
+
+    if startnewgame == True:
+        startMenu()
+
+    def GameOverScreen():
+        gameOverFont = pygame.font.Font('freesansbold.ttf', 100)
+        restartFont = pygame.font.Font('freesansbold.ttf', 18)
+        gameSurf = gameOverFont.render('Game Over', True, BLACK)
+        overSurf = gameOverFont.render('Score: ' + str(score), True, BLACK)
+        restartSurf = restartFont.render('Press spacebar to restart', True, BLACK)
+        #scoreSurface = gameOverFont.render('score: ' + str(score), True, BLACK)
+        gameRect = gameSurf.get_rect()
+        overRect = overSurf.get_rect()
+        restartRect = restartSurf.get_rect()
+        #scoreRect = scoreSurface.get_rect()
+        gameRect.midtop = (screen_width / 2, 10)
+        overRect.midtop = (screen_width / 2, gameRect.height + 10 + 25)
+        restartRect = (300, overRect.height + 130)
+        #scoreRect.midtop = (screen_width / 2, overRect.height + 10 + 25)
+
+        #degu.dead()
+        degusprites.update()
+        pipelist.update()
+        screen.blit(bg, (0, 0))
+        degusprites.draw(screen)
+        pipelist.draw(screen)
+        screen.blit(gameSurf, gameRect)
+        screen.blit(overSurf, overRect)
+        screen.blit(restartSurf, restartRect)
+
+
+        #screen.blit(scoreSurface, scoreRect)
+
+        pygame.display.update()
+        pygame.time.wait(500)
+         # clear out any key presses in the event queue
+        while True:
+
+             Clock.tick(60)
+             for event in pygame.event.get():
+                 if event.type == QUIT:
+                     pygame.quit()
+                     sys.exit()
+                 elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+
+                        pipelist.empty()
+                        degu.Dead = False
+                        running = True
+                        main()
     #starttime = time.time()
     while running:
         Clock.tick(60)
         for event in pygame.event.get():
             if event.type == QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    jump_sound.play()
+
                     degu.jump()
 
                     #if x < 1:
@@ -253,11 +345,11 @@ def main():
         #pipe.move()
 # Here is the good stuff
         timer += 1
-        if timer >= random.randint(50, 70):
+        if timer >= random.randint(46, 66) and degu.Dead == False:
             pipelist.add(Pipe(screen, random.randint(270, 380)))
             timer = 0
-        elif timer == -500:
-            running = False
+        #elif timer == -500:
+        #    running = False
             #Need way to stop running main loop but have a menu
 
 
@@ -266,23 +358,35 @@ def main():
 
         #pipesprites.update()
 
-        screen.blit(background, (0, 0))
+        screen.blit(bg, (0, 0))
         degusprites.draw(screen)
         pipelist.draw(screen)
         hit = pygame.sprite.spritecollide(degu, pipelist, False)
         if hit:
             hit_pipe_sound.play()
             degu.dead()
-            timer = -1000
+            running = False
+            GameOverScreen()
+            timer = 0
+
             for i in pipelist:
                 i.stop()
+
+
         for pipe in pipelist:
             if pipe.rect.x < 0:
                 pipe.kill()
                 score += 1
+                score_sound.play()
         for gu in degusprites:
             if gu.rect.y <= 180:
                 gu.image = gu.original
+        # ************ Might have to move / play with this to get working
+        scoreSurf = BASICFONT.render('Score: ' + str(score), 1, BLACK)
+        scoreRect = scoreSurf.get_rect()
+        scoreRect.topleft = (screen_width - 100, 10)
+        screen.blit(scoreSurf, scoreRect)
+        # ************** end score
 
 
         #for testing
@@ -308,6 +412,9 @@ def main():
         #pipesprites.draw(screen)
 
         pygame.display.flip()
+
+                #elif event.type == pygame.KEYDOWN:
+                #    if event.key == pygame.K_SPACE:
         # Testing Branch
 
 
