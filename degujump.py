@@ -100,7 +100,7 @@ class Degu(pygame.sprite.Sprite):
 class Pipe(pygame.sprite.Sprite):
     def __init__(self, screen, height):
         pygame.sprite.Sprite.__init__(self)
-        self.image, self.rect = image('pipe.png', -1)
+        self.image, self.rect = image('Pipe.png', -1)
         self.image = pygame.transform.scale(self.image, (50, 210))
         screen = pygame.display.get_surface()
         self.rect.topleft = 770, height
